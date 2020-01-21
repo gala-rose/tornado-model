@@ -9,10 +9,12 @@
 ;; chunk types
 ;;---------------------------------------
 
-;; what about a chunk to keep track of the task. goal (state) is to translate stimulus. This triggers stimulus to maginitude??
+;; Chunk to keep track of the task. goal (state) is to translate stimulus. This triggers stimulus to maginitude??
 ;; possible states: look-screen, encoding, translating,
-(chunk-type translate-stimulus 
-	state)
+(chunk-type track-task1 
+	state
+	complete
+	)
 
 ;; information taken from the visual buffer (placed there on the interface side)
 (chunk-type stimulus
@@ -46,11 +48,13 @@
      buffer empty
 
     ?goal>
+    ISA track-task1
     state look-screen
 
 ==> 
 goal>
 	=goal>
+		ISA track-task1
 		state	encoding		
    +imaginal>
    		isa	stimulus
@@ -64,10 +68,12 @@ goal>
 	forecast =cur_forecast
 
 	?goal>
+		ISA track-task1
 		state encoding
+...)
 
-...
+;;set associations between stimulus and magnitudes
+;(add-dm
+	;(green ISA stimulus relation in ?? )
 	)
-
-
 )
