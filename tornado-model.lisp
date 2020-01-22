@@ -1,4 +1,4 @@
-
+;;tornado model
 (clear-all)
 
 (define-model tornado-model
