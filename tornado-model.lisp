@@ -3,7 +3,7 @@
 
 (define-model tornado-model
 
-;; set parameters (sgp)
+;; set parameters
 
 ;;---------------------------------------
 ;; chunk types
@@ -11,8 +11,8 @@
 
 ;; Chunk to keep track of the first task (tracking from seeing stimulus to determining magnitude) in goal module. Three possible entries for state slot: look-screen, encoding, translating.
 (chunk-type goal
-			state ;;look-screen, encoding, translating
-			decision ;;yes/no. whether a decision to shelter or not shelter was made or not
+	state ;;look-screen, encoding, translating
+	decision ;;yes/no. whether a decision to shelter or not shelter was made or not
 	)
 
 ;; stimulus chunk is information about the forecast taken from the visual buffer. Forecasts are broken down by individual symbols (e.g. the symbol of orange, the symbol of 25%, etc.). Some forecasts have up to three components (A, B, C)
@@ -35,7 +35,7 @@
 	)
 
 ;;---------------------------------------
-;; preload chunks - include a sample magnitudes?
+;; preload chunks - include a sample magnitude?
 ;;---------------------------------------
 (add-dm (cur_forecast_a ISA stimulus yes)
 		(make-decision ISA goal
@@ -68,7 +68,6 @@
     state look-screen
 
 ==> 
-goal>
 	=goal>
 	ISA 	make-decision
 	state	encoding		
