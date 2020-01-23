@@ -3,45 +3,49 @@
 
 (define-model tornado-model
 
-;; set parameters
+;; SET PARAMETERS
 
 ;;---------------------------------------
 ;; chunk types
 ;;---------------------------------------
 
-;; Chunk to keep track of the first task (tracking from seeing stimulus to determining magnitude) in goal module. Three possible entries for state slot: look-screen, encoding, translating.
+;; Chunk to keep track task in goal module.
 (chunk-type goal
 	state ;;look-screen, encoding, translating
-	decision ;;yes/no. whether a decision to shelter or not shelter was made or not
+	decision ;;yes/no. whether a decision to shelter or not shelter was made or not. "Yes" will be a requirement to begin next trial.
 	)
 
-;; stimulus chunk is information about the forecast taken from the visual buffer. Forecasts are broken down by individual symbols (e.g. the symbol of orange, the symbol of 25%, etc.). Some forecasts have up to three components (A, B, C)
+;; stimulus chunk is information about the forecast taken from the visual buffer.
 (chunk-type stimulus
-	forecastA 
-	forecastB 
-	forecastC 
-	numberA
-	numberB
+	forecast
+	number
 	color
 	word
 	)
 
 ;; This chunk represents a magnitude (preloaded - think of as real-world knowledge) associated with colors, numbers, and words.
 (chunk-type magnitude
-	magnitude
-	number
+	mag
+	number 
 	color 
 	word
 	)
 
 ;;---------------------------------------
-;; preload chunks - include a sample magnitude?
+;; preload chunks
 ;;---------------------------------------
-(add-dm (cur_forecast_a ISA stimulus yes)
-		(make-decision ISA goal
-			   state look-screen))
+;;set stimulus chunk to green to start
+(add-dm (first-forcast ISA stimulus color green)
+;;create the starting goal state as look-screen
+		(first-decision ISA make-decision
+			   state look-screen)
+		;;(mag-green-hi ISA magnitude color green mag 3)) ;;considering making 2 or three chunks per color (hi, med, weak strength)? 
 
-(set-buffer-chunk visual cur_forecast_a)
+;;place stimulus in visual buffer
+(set-buffer-chunk visual cur_forecast)
+
+;; set the initial goal
+(goal-focus first-decision)
 
 ;;---------------------------------------
 ;; productions
@@ -49,12 +53,13 @@
 
 ;; Imaginal buffer holds current problem state information
 ;; production encode-stimulus takes information from visual buffer and adds to imaginal
-(P encode-stimulus ...
+(P encode-stimulus
 	=visual>
 	isa stimulus
-	forecastA =cur_forecast_a
-	forecastB =cur_forecast_b
-	forecastC =cur_forecast_c
+	forecast =cur_forecast
+	color =color1
+	number =num1 ;;how to address num2? (e.g. the "40%"" in the "25-40%") 
+	word =word1
 
 	?visual>
 	state free
@@ -74,26 +79,20 @@
 
    +imaginal>
    	isa	stimulus
-   	forecastA =cur_forecast_a
-   	forecastB =cur_forecast_b
-   	forecastC =cur_forecast_c
-   	numberA =cur_forecast_numberA
-	numberB =cur_forecast_numberB
-	color =cur_forecast_color
-	word =cur_forecast_word
-   	)
+   	forecast =cur_forecast
+ 	color =color1
+	number =num1
+	word =word1
+   	) 
 
 ;; production translate takes info from imaginal buffer and retrieves a magnitude based on associative strength.
 (p translate
 	=imaginal>
 	isa	stimulus
-   	forecastA =cur_forecast_a
-   	forecastB =cur_forecast_b
-   	forecastC =cur_forecast_c
-   	numberA =cur_forecast_numberA
-	numberB =cur_forecast_numberB
-	color =cur_forecast_color
-	word =cur_forecast_word
+   	forecast =cur_forecast
+ 	color =color1
+	number =num1
+	word =word1
 
 	?imaginal>
    	state free
@@ -113,13 +112,11 @@
 
    +retrieval> 
    	ISA magntiude
-   	magnitude
-   	number
-   	color
-   	word
+   	color =color1
+   	number =num1
+   	word =word1
    	;;let imaginal clear?
 	)
 
 ;; production takes magnitude and makes decision based on shelter/not shelter threshold
-;; preload magnitudes. set associations?
 )
